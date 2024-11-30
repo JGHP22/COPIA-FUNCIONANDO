@@ -12,9 +12,9 @@ loanRouter.post('/:email/:code_bar', loanBook);
 loanRouter.put('/:email/:code_bar', returnBook);
 
 // Listar livros populares (GET)
-loanRouter.get('/', popularBooks);
+loanRouter.get('/popularBooks', popularBooks);
 
 // Listar clientes com pendências (GET)
-loanRouter.put('/:email', pendentClients);
+loanRouter.get('/pendentClients', pendentClients);
 
 export default loanRouter;
