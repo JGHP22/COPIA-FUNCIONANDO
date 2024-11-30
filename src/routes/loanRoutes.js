@@ -1,23 +1,20 @@
 import { configAssociations } from '../models/associations.js';
-import { listClients, searchClient, createClient, updateClient, deleteClient } from "../controllers/clientController.js";
+import { loanBook, returnBook, popularBooks, pendentClients } from "../controllers/loanController.js";
 import { Router } from "express";
 
 configAssociations();
-const clientRouter = Router();
+const loanRouter = Router();
 
-// Listar livros (GET)
-clientRouter.get('/', listClients);
+// Fazer emprestimo (POST)
+loanRouter.post('/:email/:code_bar', loanBook);
 
-// Buscar livro por email (GET)
-clientRouter.get('/:email', searchClient);
+// Devolver livro (PUT)
+loanRouter.put('/:email/:code_bar', returnBook);
 
-// Criar livro (POST)
-clientRouter.post('/', createClient);
+// Listar livros populares (GET)
+loanRouter.get('/', popularBooks);
 
-// Atualizar livro por email (PUT)
-clientRouter.put('/:email', updateClient);
+// Listar clientes com pendências (GET)
+loanRouter.put('/:email', pendentClients);
 
-// Deletar livro por email (DELETE)
-clientRouter.delete('/:email', deleteClient);
-
-export default clientRouter;
+export default loanRouter;
