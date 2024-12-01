@@ -11,10 +11,9 @@ async function listClients(req, res) {
 };
 
 //emailToId(email) => retorna o id do Clients com o email informado
-async function emailToId(req, res) {
+async function emailToId(email) {
     try {
-        const { EMAIL } = req.params;
-        const TARGETCLIENT = await Client.findOne({ where: { email: EMAIL } });
+        const TARGETCLIENT = await Client.findOne({ where: { email: email } });
 
         if (!TARGETCLIENT) {
             return res.status(404).json({ message: "Client not found" });
@@ -30,8 +29,8 @@ async function emailToId(req, res) {
 //createClient() => criar um registro na tabela Clients
 async function createClient(req, res) {
     try {
-        const { EMAIL, NAME, PHONE } = req.body;
-        const NEWCLIENT = await Client.create({ EMAIL, NAME, PHONE });
+        const { email, name, phone } = req.body;
+        const NEWCLIENT = await Client.create({ email, name, phone });
         res.status(201).json(NEWCLIENT);
     } catch (error) {
         res.status(400).json({message: error.message});
@@ -41,7 +40,7 @@ async function createClient(req, res) {
 //searchClient(id) => retornar um Client pelo id dele
 async function searchClient(req, res) {
     try {
-        const id = await emailToId(req, res);
+        const id = await emailToId(req.params.email);
         const TARGETCLIENT = await Client.findByPk(id);
 
         if (!TARGETCLIENT) {
@@ -56,15 +55,15 @@ async function searchClient(req, res) {
 //updateClient(id) => atualiza Clients
 async function updateClient(req, res) {
     try {
-        const id = await emailToId(req, res);
+        const id = await emailToId(req.params.email);
         const UPDATECLIENT = await Client.findByPk(id);
 
         if (!UPDATECLIENT) {
             return res.status(404).json({ message: "Client not found" });
         }
         
-        const { EMAIL, NAME, PHONE } = req.body;
-        await UPDATECLIENT.update({ EMAIL, NAME, PHONE });
+        const { email, name, phone } = req.body;
+        await UPDATECLIENT.update({ email: email, name: name, phone: phone });
 
         res.status(200).json(UPDATECLIENT);
     } catch (error) {
@@ -75,7 +74,7 @@ async function updateClient(req, res) {
 //deleteClient(id) => exclui o registro
 async function deleteClient(req, res) {
     try {
-        const id = await emailToId(req, res);
+        const id = await emailToId(req.params.email);
         const DELETECLIENT = await Client.findByPk(id);
 
         if (!DELETECLIENT) {
