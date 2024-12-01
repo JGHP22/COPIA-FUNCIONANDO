@@ -6,7 +6,7 @@ configAssociations();
 const loanRouter = Router();
 
 // Fazer emprestimo (POST)
-loanRouter.post('/:email/:code_bar', loanBook);
+loanRouter.post('/', loanBook);
 
 // Devolver livro (PUT)
 loanRouter.put('/:email/:code_bar', returnBook);

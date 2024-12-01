@@ -6,20 +6,20 @@ import { code_barToId} from "./bookController.js"
 //loanBook() => criar um registro na tabela Loan
 async function loanBook(req, res) {
     try {
-
-        const { EMAIL, CODE_BAR } = req.body;
-        const ID_CLIENT = await emailToId(EMAIL);
-        const ID_BOOK = await code_barToId(CODE_BAR);
-
-        const COUNT = await Loan.count({ where:{ date_return: [Op.isNull], id: ID_CLIENT, }});
-
+        const { email, code_bar } = req.body;
+        const id_client = await emailToId(email);
+        console.log(id_client);
+        const id_book = await code_barToId(code_bar);
+        console.log(id_book);
+        const COUNT = await Loan.count({ where:{ return_date: [Op.isNull], id_client: id_client, }});
+        console.log(COUNT);
     if(COUNT >= 3){
             return res.status(400).json({ message: "The client cannot make a loan, reason: limit of borrowed books reached." });
     }
-        const LOAN_DATE = new Date();
-        const DUE_DATE = new Date();
-        DUE_DATE.setDate(DUE_DATE.getDate()+14);
-        const NEWLOAN = await Loan.create({ ID_CLIENT, ID_BOOK, LOAN_DATE, DUE_DATE});
+        const loan_date = new Date();
+        const due_date = new Date();
+        due_date.setDate(due_date.getDate()+14);
+        const NEWLOAN = await Loan.create({ id_client: id_client, id_book: id_book, loan_date: loan_date, due_date: due_date});
         res.status(201).json(NEWLOAN);
     } catch (error) {
         res.status(400).json({message: error.message});
@@ -29,9 +29,9 @@ async function loanBook(req, res) {
 //returnBook() => devolver um livro
 async function returnBook(req, res) {
     try {
-        const { EMAIL, CODE_BAR } = req.body;
-        const ID_CLIENT = await emailToId(EMAIL);
-        const ID_BOOK = await code_barToId(CODE_BAR);
+        const { email, code_bar } = req.body;
+        const ID_CLIENT = await emailToId(email);
+        const ID_BOOK = await code_barToId(code_bar);
         const TARGETLOAN = await Loan.findOne({where:{id_client: ID_CLIENT, id_book: ID_BOOK}});
     if (!TARGETLOAN){
         return res.status(404).json({ message: "Loan not found" });
