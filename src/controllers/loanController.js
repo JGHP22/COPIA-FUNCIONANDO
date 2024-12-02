@@ -10,7 +10,7 @@ async function loanBook(req, res) {
         const id_client = await emailToId(email);
         console.log("O id do cliente é:" + id_client);
         const id_book = await code_barToId(code_bar);
-        console.log("O id do livro é:" + code_bar);
+        console.log("O id do livro é:" + id_book);
         const COUNT = await Loan.count({ where:{ return_date: [Op.isNull], id_client: id_client, }});
         console.log(COUNT);
     if(COUNT >= 3){
