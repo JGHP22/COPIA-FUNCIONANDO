@@ -8,9 +8,9 @@ async function loanBook(req, res) {
     try {
         const { email, code_bar } = req.body;
         const id_client = await emailToId(email);
-        console.log(id_client);
+        console.log("O id do cliente é:" + id_client);
         const id_book = await code_barToId(code_bar);
-        console.log(id_book);
+        console.log("O id do livro é:" + code_bar);
         const COUNT = await Loan.count({ where:{ return_date: [Op.isNull], id_client: id_client, }});
         console.log(COUNT);
     if(COUNT >= 3){
@@ -19,7 +19,7 @@ async function loanBook(req, res) {
         const loan_date = new Date();
         const due_date = new Date();
         due_date.setDate(due_date.getDate()+14);
-        const NEWLOAN = await Loan.create({ id_client: id_client, id_book: id_book, loan_date: loan_date, due_date: due_date});
+        const NEWLOAN = await Loan.create({ id_client, id_book, loan_date, due_date});
         res.status(201).json(NEWLOAN);
     } catch (error) {
         res.status(400).json({message: error.message});
