@@ -8,11 +8,8 @@ async function loanBook(req, res) {
     try {
         const { email, code_bar } = req.body;
         const id_client = await emailToId(email);
-        console.log("O id do cliente é:" + id_client);
         const id_book = await code_barToId(code_bar);
-        console.log("O id do livro é:" + id_book);
         const COUNT = await Loan.count({ where:{ return_date: [Op.isNull], id_client: id_client, }});
-        console.log(COUNT);
     if(COUNT >= 3){
             return res.status(400).json({ message: "The client cannot make a loan, reason: limit of borrowed books reached." });
     }
@@ -29,7 +26,8 @@ async function loanBook(req, res) {
 //returnBook() => devolver um livro
 async function returnBook(req, res) {
     try {
-        const { email, code_bar } = req.body;
+        const email = req.params.email;
+        const code_bar = req.params.code_bar;
         const ID_CLIENT = await emailToId(email);
         const ID_BOOK = await code_barToId(code_bar);
         const TARGETLOAN = await Loan.findOne({where:{id_client: ID_CLIENT, id_book: ID_BOOK}});
@@ -70,7 +68,7 @@ async function popularBooks(req, res) {
 //pendentClients() => devolver uma lista dos clientes com emprestimos pendentes.
 async function pendentClients(req, res) {
     try {
-        const PENDENTCLIENTS = await Loan.findAll({where:{ date_return: [Op.isNull]}});
+        const PENDENTCLIENTS = await Loan.findAll({where:{ return_date: null}});
         res.status(200).json(PENDENTCLIENTS);
     } catch (error) {
         res.status(400).json({message: error.message});
